@@ -17,8 +17,11 @@ jobs:
       - name: Build unsigned app
         working-directory: mobile/ios/App
         run: |
-          xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" | tail -n 30
+          set -eo pipefail
+          ls
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" | tail -n 40
           mkdir -p Payload && cp -R build/Build/Products/Release-iphoneos/App.app Payload/
           zip -qr Margin.ipa Payload
+          ls -lh Margin.ipa
       - uses: actions/upload-artifact@v4
         with: { name: Margin-ipa, path: mobile/ios/App/Margin.ipa }
